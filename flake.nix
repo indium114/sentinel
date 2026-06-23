@@ -6,11 +6,18 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs { inherit system; };
-      in {
+      in
+      {
         devShells.default = pkgs.mkShell {
           name = "rust-devshell";
 
@@ -33,6 +40,10 @@
 
           cargoLock.lockFile = ./Cargo.lock;
 
+          nativeBuildInputs = [
+            pkgs.pkg-config
+          ];
+
           buildInputs = [
             pkgs.lua54Packages.lua
           ];
@@ -42,5 +53,6 @@
           type = "app";
           program = "${self.packages.${pkgs.stdenv.hostPlatform.system}.sentinel}/bin/sentinel";
         };
-      });
+      }
+    );
 }
