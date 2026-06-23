@@ -4,6 +4,24 @@
 
 it is configured in **lua**, allowing you to specify what directories you want to watch, and what you want to happen whenever a certain event takes place.
 
+## installation
+
+### from the Binary
+
+Go to the *Releases* section on the right, click the latest release, and click the binary for your architecture to download it.
+
+### with [wares](https://github.com/indium114/wares)
+
+add the following to your `config.yaml`, replacing `x86_64` with `aarch64` if you're on ARM.
+
+```yaml
+wares:
+  sentinel:
+    name: sentinel
+    repo: indium114/sentinel
+    asset: "sentinel_Linux_x86_64"
+```
+
 ## configuration
 
 to configure *sentinel*, create `~/.config/sentinel/init.lua` and write your configuration.<br/>
