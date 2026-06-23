@@ -13,6 +13,7 @@ pub fn kind_of_event(event: &EventKind) -> String {
     } else if event.is_other() {
         "other".to_string()
     } else {
+        usefulog::warn("unknown fs event");
         "unknown".to_string()
     }
 }
@@ -34,7 +35,7 @@ pub fn spawn_watcher(path: &str, recursive: bool) -> Result<()> {
                 println!("event: {}", kind_of_event(&event.kind));
                 println!("paths: {:#?}", event.paths);
             }
-            Err(e) => println!("error: {:#?}", e),
+            Err(e) => usefulog::err(format!("{:#?}", e))
         }
     }
 
