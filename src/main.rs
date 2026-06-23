@@ -33,12 +33,13 @@ fn main() -> Result<()> {
     for pair in config.pairs::<String, Table>() {
         let (k, v) = pair?;
         usefulog::hint(format!("watching {k}"));
-        println!("value: {:#?}", v);
+        println!("value: {:#?}", v); // DEBUG
         let process = thread::spawn(move || {
             help::spawn_watcher(
                 &k,
                 v.get("recurse")
                     .expect(format!("{k}.recurse is not a boolean").as_str()),
+                v,
             )
         });
         processes.push(process);
