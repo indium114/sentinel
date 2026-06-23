@@ -21,7 +21,7 @@
             rust-analyzer
             clippy
             pkg-config
-            lua55Packages.lua
+            lua54Packages.lua
           ];
         };
 
@@ -32,6 +32,10 @@
           src = ./.;
 
           cargoLock.lockFile = ./Cargo.lock;
+
+          buildInputs = [
+            pkgs.lua54Packages.lua
+          ];
         };
 
         apps.sentinel = {
