@@ -3,9 +3,9 @@ use std::{path::Path, sync::mpsc};
 
 pub fn home() -> String {
     let dir = dirs::home_dir();
-    return dir
+    dir
         .map(|p| p.to_string_lossy().into_owned())
-        .unwrap_or_default();
+        .unwrap_or_default()
 }
 
 pub fn kind_of_event(event: &EventKind) -> String {
@@ -50,27 +50,27 @@ pub fn spawn_watcher(path: &str, recursive: bool, functions: mlua::Table) -> Res
 
                 match kind_of_event(&event.kind).as_str() {
                     "access" => {
-                        let func: mlua::Function = functions.get("access").expect(&format!("no 'access' function for {path}"));
+                        let func: mlua::Function = functions.get("access").unwrap_or_else(|_| panic!("no 'access' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'access'");
                         usefulog::log(format!("access event in {path}"))
                     },
                     "create" => {
-                        let func: mlua::Function = functions.get("create").expect(&format!("no 'create' function for {path}"));
+                        let func: mlua::Function = functions.get("create").unwrap_or_else(|_| panic!("no 'create' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'create");
                         usefulog::log(format!("create event in {path}"))
                     },
                     "modify" => {
-                        let func: mlua::Function = functions.get("modify").expect(&format!("no 'modify' function for {path}"));
+                        let func: mlua::Function = functions.get("modify").unwrap_or_else(|_| panic!("no 'modify' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'modify'");
                         usefulog::log(format!("modify event in {path}"))
                     },
                     "remove" => {
-                        let func: mlua::Function = functions.get("remove").expect(&format!("no 'remove' function for {path}"));
+                        let func: mlua::Function = functions.get("remove").unwrap_or_else(|_| panic!("no 'remove' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'remove'");
                         usefulog::log(format!("remove event in {path}"))
                     },
                     "other" => {
-                        let func: mlua::Function = functions.get("other").expect(&format!("no 'other' function for {path}"));
+                        let func: mlua::Function = functions.get("other").unwrap_or_else(|_| panic!("no 'other' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'other'");
                         usefulog::log(format!("other event in {path}"))
                     },

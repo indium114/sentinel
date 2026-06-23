@@ -41,7 +41,7 @@ fn main() -> Result<()> {
             help::spawn_watcher(
                 &k,
                 v.get("recurse")
-                    .expect(format!("{k}.recurse is not a boolean").as_str()),
+                    .unwrap_or_else(|_| panic!("{k}.recurse is not a boolean")),
                 v,
             )
         });
