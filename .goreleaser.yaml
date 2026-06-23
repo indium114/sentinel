@@ -15,6 +15,7 @@ before:
     - rustup default stable
     - cargo install --locked cargo-zigbuild
     - cargo fetch --locked
+    - sudo apt install -y lua5.4 lua5.4-dev
 
 builds:
   - builder: rust
