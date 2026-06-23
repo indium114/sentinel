@@ -1,6 +1,13 @@
 use notify::{Event, EventKind, RecursiveMode, Result, Watcher};
 use std::{path::Path, sync::mpsc};
 
+pub fn home() -> String {
+    let dir = dirs::home_dir();
+    return dir
+        .map(|p| p.to_string_lossy().into_owned())
+        .unwrap_or_default();
+}
+
 pub fn kind_of_event(event: &EventKind) -> String {
     if event.is_access() {
         "access".to_string()
@@ -35,7 +42,7 @@ pub fn spawn_watcher(path: &str, recursive: bool) -> Result<()> {
                 println!("event: {}", kind_of_event(&event.kind));
                 println!("paths: {:#?}", event.paths);
             }
-            Err(e) => usefulog::err(format!("{:#?}", e))
+            Err(e) => usefulog::err(format!("{:#?}", e)),
         }
     }
 
