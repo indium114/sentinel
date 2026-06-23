@@ -1,4 +1,4 @@
-use mlua::{Lua, Result, Table};
+use mlua::{Lua, Result, Table, Value};
 use std::{fs, process};
 
 mod help;
@@ -28,6 +28,12 @@ fn main() -> Result<()> {
     let config: Table = lua.load(&config_string).eval()?;
 
     println!("{:#?}", config);
+
+    println!("looping over watched directories");
+    for pair in config.pairs::<Value, Value>() {
+        let (k, v) = pair?;
+        println!("key: {:#?}, value: {:#?}", k, v);
+    }
 
     Ok(())
 
