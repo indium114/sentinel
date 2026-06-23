@@ -1,6 +1,5 @@
 use notify::{Event, EventKind, RecursiveMode, Result, Watcher};
 use std::{path::Path, sync::mpsc};
-use mlua::{Lua, Error};
 
 pub fn home() -> String {
     let dir = dirs::home_dir();
@@ -35,38 +34,45 @@ pub fn spawn_watcher(path: &str, recursive: bool, functions: mlua::Table) -> Res
         false => RecursiveMode::NonRecursive,
     };
 
+    #[cfg(debug_assertions)]
     println!("spawning watcher for {path}");
-
-    let lua = Lua::new();
 
     watcher.watch(Path::new(path), recurse)?;
     for res in rx {
         match res {
             Ok(event) => {
+                #[cfg(debug_assertions)]
                 println!("== NEW EVENT ==");
+                #[cfg(debug_assertions)]
                 println!("event: {}", kind_of_event(&event.kind));
+                #[cfg(debug_assertions)]
                 println!("paths: {:#?}", event.paths);
 
                 match kind_of_event(&event.kind).as_str() {
                     "access" => {
                         let func: mlua::Function = functions.get("access").expect(&format!("no 'access' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'access'");
+                        usefulog::log(format!("access event in {path}"))
                     },
                     "create" => {
                         let func: mlua::Function = functions.get("create").expect(&format!("no 'create' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'create");
+                        usefulog::log(format!("create event in {path}"))
                     },
                     "modify" => {
                         let func: mlua::Function = functions.get("modify").expect(&format!("no 'modify' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'modify'");
+                        usefulog::log(format!("modify event in {path}"))
                     },
                     "remove" => {
                         let func: mlua::Function = functions.get("remove").expect(&format!("no 'remove' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'remove'");
+                        usefulog::log(format!("remove event in {path}"))
                     },
                     "other" => {
                         let func: mlua::Function = functions.get("other").expect(&format!("no 'other' function for {path}"));
                         let _: () = func.call(event.paths).expect("failed to call 'other'");
+                        usefulog::log(format!("other event in {path}"))
                     },
                     &_ => panic!("tried to call nonexistent event!"),
                 }

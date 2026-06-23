@@ -33,7 +33,10 @@ fn main() -> Result<()> {
     for pair in config.pairs::<String, Table>() {
         let (k, v) = pair?;
         usefulog::hint(format!("watching {k}"));
+
+        #[cfg(debug_assertions)]
         println!("value: {:#?}", v); // DEBUG
+
         let process = thread::spawn(move || {
             help::spawn_watcher(
                 &k,
