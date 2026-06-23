@@ -1,5 +1,5 @@
-use mlua::{Lua, Result, Table, Value};
-use std::{fs, process};
+use mlua::{Lua, Result, Table};
+use std::{fs, process, thread};
 
 mod help;
 
@@ -27,15 +27,29 @@ fn main() -> Result<()> {
     let lua = Lua::new();
     let config: Table = lua.load(&config_string).eval()?;
 
-    println!("{:#?}", config);
+    // MARK: watch directories
+    let mut processes = Vec::new();
 
-    println!("looping over watched directories");
-    for pair in config.pairs::<Value, Value>() {
+    for pair in config.pairs::<String, Table>() {
         let (k, v) = pair?;
-        println!("key: {:#?}, value: {:#?}", k, v);
+        usefulog::hint(format!("watching {k}"));
+        println!("value: {:#?}", v);
+        let process = thread::spawn(move || {
+            help::spawn_watcher(
+                &k,
+                v.get("recurse")
+                    .expect(format!("{k}.recurse is not a boolean").as_str()),
+            )
+        });
+        processes.push(process);
+    }
+
+    for process in processes {
+        if let Err(e) = process.join() {
+            usefulog::err(format!("a watcher thread panicked! {:#?}", e));
+            panic!()
+        }
     }
 
     Ok(())
-
-    // help::spawn_watcher(path, true)
 }

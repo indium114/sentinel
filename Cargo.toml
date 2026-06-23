@@ -5,6 +5,6 @@ edition = "2024"
 
 [dependencies]
 dirs = "6.0.0"
-mlua = { version = "0.11.6", features = [ "lua55" ] }
+mlua = { version = "0.11.6", features = [ "lua55", "send" ] }
 notify = "8.2.0"
 usefulog = "0.1.1"

@@ -34,6 +34,8 @@ pub fn spawn_watcher(path: &str, recursive: bool) -> Result<()> {
         false => RecursiveMode::NonRecursive,
     };
 
+    println!("spawning watcher for {path}");
+
     watcher.watch(Path::new(path), recurse)?;
     for res in rx {
         match res {
